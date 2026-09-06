@@ -92,7 +92,15 @@
     .num{min-height:55px}
     .actions,.steps{grid-template-columns:1fr}
   }
-.admin{margin-top:18px;background:#111;color:#fff;border-radius:22px;padding:18px}.admin h2{margin:0 0 10px;color:#ff4a86}.admin-controls{display:flex;gap:10px;flex-wrap:wrap}.admin-controls input[...]
+  .admin{margin-top:18px;background:#111;color:#fff;border-radius:22px;padding:18px}
+  .admin h2{margin:0 0 10px;color:#ff4a86}
+  .admin-controls{display:flex;gap:10px;flex-wrap:wrap}
+  .admin-controls input{flex:1;min-width:180px;padding:12px;border-radius:10px;border:1px solid #ccc}
+  .admin-controls button{padding:12px 16px;border:0;border-radius:10px;font-weight:800;cursor:pointer}
+  .admin-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;margin-top:14px}
+  .admin-num{border:0;border-radius:7px;padding:8px 2px;font-weight:800;cursor:pointer;background:#fff;color:#111}
+  .admin-num.paid{background:#d7195b;color:#fff}
+  @media(max-width:700px){.admin-grid{grid-template-columns:repeat(5,1fr)}}
 </style>
 </head>
 <body>
@@ -119,7 +127,7 @@
   <div class="pixbox">
     <h2>💗 PIX — copie e pague</h2>
     <div id="selectedText">Escolha um número acima.</div>
-    <textarea id="pix" class="pix-code" readonly>00020126580014BR.GOV.BCB.PIX0136c5f6950f-5421-45a9-a016-cde466719bfc520400005303986540510.005802BR5923Jeciane Moraes de Souza6009SAO PAULO62140510[...]
+    <textarea id="pix" class="pix-code" readonly>00020126580014BR.GOV.BCB.PIX0136c5f6950f-5421-45a9-a016-cde466719bfc520400005303986540510.005802BR5923Jeciane Moraes de Souza6009SAO PAULO62140510sd2Td7Gkhy63048605</textarea>
     <button class="primary" id="copyBtn">📋 Copiar PIX copia e cola</button><button class="whatsapp" id="whatsMainBtn">💬 Avisar pelo WhatsApp</button>
     <p class="note">Depois de copiar, abra o aplicativo do seu banco, escolha PIX → Copiar e Colar e confirme o pagamento de R$ 10,00.</p>
   </div>
@@ -139,7 +147,7 @@
   </div>
 </section>
 
-<section class="admin"><h2>🔐 Painel da administradora</h2><div id="adminLogin"><p>Entre com sua senha para administrar os números.</p><div class="admin-controls"><input id="adminPassword" typ[...]
+<section class="admin"><h2>🔐 Painel da administradora</h2><div id="adminLogin"><p>Entre com sua senha para administrar os números.</p><div class="admin-controls"><input id="adminPassword" type="password" placeholder="Senha"><button onclick="loginAdmin()">Entrar</button></div></div><div id="adminPanel" style="display:none"><p>Toque no número para marcar/desmarcar como <b>PAGO</b>.</p><div class="admin-controls"><button onclick="clearAllPaid()">Liberar todos</button></div><div id="adminGrid" class="admin-grid"></div><p id="adminStatus"></p></div></section><footer>🍫 Prêmio: uma linda cesta de chocolate! &nbsp; • &nbsp; Muito obrigada pelo apoio! 💗</footer>
 </div>
 
 <div class="modal" id="modal">
@@ -148,9 +156,9 @@
     <h2>Número escolhido 💗</h2>
     <div class="chosen" id="chosen"></div>
     <p>Agora copie o PIX abaixo e faça o pagamento de <b>R$ 10,00</b>.</p>
-    <textarea id="modalPix" class="pix-code" readonly>00020126580014BR.GOV.BCB.PIX0136c5f6950f-5421-45a9-a016-cde466719bfc520400005303986540510.005802BR5923Jeciane Moraes de Souza6009SAO PAULO621[...]
+    <textarea id="modalPix" class="pix-code" readonly>00020126580014BR.GOV.BCB.PIX0136c5f6950f-5421-45a9-a016-cde466719bfc520400005303986540510.005802BR5923Jeciane Moraes de Souza6009SAO PAULO62140510sd2Td7Gkhy63048605</textarea>
     <button class="primary" id="modalCopy">📋 Copiar PIX copia e cola</button><button class="whatsapp" id="whatsBtn">💬 Avisar pelo WhatsApp</button>
-    <p class="note">Importante: esta página é uma interface de escolha. Para impedir que duas pessoas escolham o mesmo número em celulares diferentes, é necessário conectar a página a um ba[...]
+    <p class="note">Importante: esta página é uma interface de escolha. Para impedir que duas pessoas escolham o mesmo número em celulares diferentes, é necessário conectar a página a um banco de dados/servidor.</p>
   </div>
 </div>
 
@@ -191,12 +199,12 @@ async function copyPix(){
     alert('PIX copiado! Agora abra o app do seu banco.');
   }
 }
-const whatsappNumber='5591988866082'; function openWhatsApp(){ const number=selected.size?[...selected][0]:null; if(!number){alert('Primeiro escolha um número da rifa.');return;} const message=`[...]
+const whatsappNumber='5591988866082'; function openWhatsApp(){ const number=selected.size?[...selected][0]:null; if(!number){alert('Primeiro escolha um número da rifa.');return;} const message=`Olá, Jeciane! 💗 Escolhi o número ${number} da Rifa de Formatura e vou realizar o PIX de R$ 10,00.`; window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`,'_blank'); }
 document.getElementById('copyBtn').onclick=copyPix;
 document.getElementById('modalCopy').onclick=copyPix; document.getElementById('whatsBtn').onclick=openWhatsApp; document.getElementById('whatsMainBtn').onclick=openWhatsApp;
 document.getElementById('close').onclick=()=>modal.classList.remove('open');
 modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('open')});
-const ADMIN_PASSWORD='394062'; const paidKey='rifa_paid_numbers'; function getPaid(){try{return new Set(JSON.parse(localStorage.getItem(paidKey)||'[]'))}catch(e){return new Set()}} function savePai[...]
+const ADMIN_PASSWORD='394062'; const paidKey='rifa_paid_numbers'; function getPaid(){try{return new Set(JSON.parse(localStorage.getItem(paidKey)||'[]'))}catch(e){return new Set()}} function savePaid(s){localStorage.setItem(paidKey,JSON.stringify([...s]))} function loginAdmin(){if(document.getElementById('adminPassword').value!==ADMIN_PASSWORD)return alert('Senha incorreta.');document.getElementById('adminLogin').style.display='none';document.getElementById('adminPanel').style.display='block';renderAdmin()} function renderAdmin(){const g=document.getElementById('adminGrid');g.innerHTML='';const paid=getPaid();for(let i=0;i<100;i++){const n=String(i).padStart(2,'0'),b=document.createElement('button');b.className='admin-num '+(paid.has(n)?'paid':'');b.textContent=n;b.onclick=()=>{const p=getPaid();p.has(n)?p.delete(n):p.add(n);savePaid(p);syncPublicGrid();renderAdmin()};g.appendChild(b)}document.getElementById('adminStatus').textContent=paid.size+' número(s) pago(s).'} function syncPublicGrid(){const p=getPaid();document.querySelectorAll('#grid .num').forEach(b=>{const n=b.textContent;b.classList.toggle('sold',p.has(n));if(p.has(n))b.classList.remove('selected')})} function clearAllPaid(){if(confirm('Liberar todos?')){localStorage.removeItem(paidKey);syncPublicGrid();renderAdmin()}} syncPublicGrid();
 </script>
 </body>
 </html>
